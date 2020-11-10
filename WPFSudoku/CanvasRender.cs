@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WPFSudoku
 {
@@ -175,25 +179,9 @@ namespace WPFSudoku
             Console.WriteLine($"Time taken: {sw.ElapsedMilliseconds}ms");
             Text = null;
 
-            for (int i = 0; i < 6; i++)
-            {
-                for (int j = 0; j < 6; j++)
-                {
-                    if (BoardList[i][j] > 0 && TextBlockList[i][j].Background == null)
-                    {
-                        var RGB = Colours[BoardList[i][j] - 1];
-                        var r = RGB.Item1; var g = RGB.Item2; var b = RGB.Item3;
-                        SolidColorBrush ChoosenColor = new SolidColorBrush();
-                        ChoosenColor.Color = Color.FromRgb(r, g, b);
-                        TextBlockList[i][j].Text = $"{BoardList[i][j]}";
-                        TextBlockList[i][j].Background = ChoosenColor;
-                    }
-                }
-            }
-
         }
 
-        private void Solver(List<List<int>> BoardList, List<PossibleMembers> ValidMembers, List<int> Members, List<List<int>> Starts, List<List<int>> Ends, int Steps)
+        private async void Solver(List<List<int>> BoardList, List<PossibleMembers> ValidMembers, List<int> Members, List<List<int>> Starts, List<List<int>> Ends, int Steps)
         {
             Steps++;
             ValidMembers.Clear();
@@ -311,6 +299,24 @@ namespace WPFSudoku
                 RemoveMembers(ValidMembers);
                 Steps++;
 
+                for (int i = 0; i < 6; i++)
+                {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        if (BoardList[i][j] > 0 && TextBlockList[i][j].Background == null)
+                        {
+                            var RGB = Colours[BoardList[i][j] - 1];
+                            var r = RGB.Item1; var g = RGB.Item2; var b = RGB.Item3;
+                            SolidColorBrush ChoosenColor = new SolidColorBrush();
+                            ChoosenColor.Color = Color.FromRgb(r, g, b);
+                            Refresh(TextBlockList[i][j]);
+                            TextBlockList[i][j].Text = await Task.Run(() => $"{BoardList[i][j]}");
+                            TextBlockList[i][j].Background = await Task.Run(() => ChoosenColor);
+                            Thread.Sleep(300);
+                        }
+                    }
+                }
+
                 if (ValidMembers.Count > 0)
                 {
                     Steps++;
@@ -333,6 +339,13 @@ namespace WPFSudoku
                     ValidMembers.Remove(Item);
                 }
             }
+        }
+
+        private static Action EmptyDelegate = delegate () { };
+
+        public static void Refresh(UIElement uiElement)
+        {
+            uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
         }
     }
 

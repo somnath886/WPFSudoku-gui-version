@@ -34,6 +34,7 @@ namespace WPFSudoku
         private void Solve(object sender, RoutedEventArgs e)
         {
             canvasrender.SolveSudoku();
+            ((MainWindow)System.Windows.Application.Current.MainWindow).UpdateLayout();
         }
 
     }
