@@ -1,0 +1,16 @@
+﻿<Window x:Class="WPFSudoku.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFSudoku"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="1280" Width="720"
+        FocusManager.FocusedElement="{Binding ElementName=mainCanvas}">
+        
+    <Grid>
+        <Canvas x:Name="mCanvas" HorizontalAlignment="Left" Height="540" Margin="1,1,1,1" VerticalAlignment="Top" Width="540" Focusable="True"/>
+        <Button x:Name="ButtonRender" Content="Render" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Click="Render" Width="164" Height="43" FontSize="20"/>
+        <Button x:Name="ButtonSolve" Content="Solve" HorizontalAlignment="Right" Margin="0,0,0,500" VerticalAlignment="Bottom" Click="Solve" Width="164" Height="43" FontSize="20" Focusable="True" IsEnabled="True"/>
+    </Grid>
+</Window>
