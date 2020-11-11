@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -80,19 +81,25 @@ namespace WPFSudoku
 
         private void ChangeText(object sender, KeyEventArgs e)
         {
-            List<int> Range = new List<int> { 1, 2, 3, 4, 5, 6 };
-            string value = e.Key.ToString();
-            int index = (int)value[1] - 48;
-            if (Range.Contains(index))
+            List<int> KeyRange = new List<int> { 35, 36, 37, 38, 39, 40 };
+
+            if (!KeyRange.Contains((int)e.Key))
             {
-                Text.Text = index.ToString();
+                Text.Text = "0";
             }
 
-            var RGB = Colours[index - 1];
-            var r = RGB.Item1; var g = RGB.Item2; var b = RGB.Item3;
-            SolidColorBrush ChoosenColor = new SolidColorBrush();
-            ChoosenColor.Color = Color.FromRgb(r, g, b);
-            Text.Background = ChoosenColor;
+            else
+            {
+                string value = e.Key.ToString();
+                int index = (int)value[1] - 48;
+                Text.Text = index.ToString();
+                var RGB = Colours[index - 1];
+                var r = RGB.Item1; var g = RGB.Item2; var b = RGB.Item3;
+                SolidColorBrush ChoosenColor = new SolidColorBrush();
+                ChoosenColor.Color = Color.FromRgb(r, g, b);
+                Text.Background = ChoosenColor;
+            }
+            
         }
 
         private void CreateRecTextBlockList(int i, int j)
@@ -312,7 +319,7 @@ namespace WPFSudoku
                             Refresh(TextBlockList[i][j]);
                             TextBlockList[i][j].Text = $"{BoardList[i][j]}";
                             TextBlockList[i][j].Background = ChoosenColor;
-                            await Task.Delay(100);
+                            
                         }
                     }
                 }
