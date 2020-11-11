@@ -123,7 +123,7 @@ namespace WPFSudoku
             Canvas.SetTop(TextBlockList[i][j], i * 90);
         }
 
-        public void SolveSudoku()
+        public async Task SolveSudoku()
         {
             List<List<int>> BoardList = new List<List<int>>();
             
@@ -174,7 +174,7 @@ namespace WPFSudoku
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            _ = Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
+            await Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
             sw.Stop();
             Console.WriteLine($"Time taken: {sw.ElapsedMilliseconds}ms");
             Text = null;
@@ -312,7 +312,7 @@ namespace WPFSudoku
                             Refresh(TextBlockList[i][j]);
                             TextBlockList[i][j].Text = await Task.Run(() => $"{BoardList[i][j]}");
                             TextBlockList[i][j].Background = await Task.Run(() => ChoosenColor);
-                            Thread.Sleep(300);
+                            //Thread.Sleep(50);
                         }
                     }
                 }
@@ -320,7 +320,7 @@ namespace WPFSudoku
                 if (ValidMembers.Count > 0)
                 {
                     Steps++;
-                    _ = Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
+                    await Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
                 }
 
                 else if (ValidMembers.Count == 0)

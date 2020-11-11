@@ -19,10 +19,9 @@ namespace WPFSudoku
             canvasrender = new CanvasRender(mCanvas);
         }
 
-        private void Solve(object sender, RoutedEventArgs e)
+        private async void Solve(object sender, RoutedEventArgs e)
         {
-            canvasrender.SolveSudoku();
-            ((MainWindow)System.Windows.Application.Current.MainWindow).UpdateLayout();
+            await canvasrender.SolveSudoku();
         }
 
     }
