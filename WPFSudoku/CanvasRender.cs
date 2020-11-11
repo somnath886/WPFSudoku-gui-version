@@ -75,8 +75,10 @@ namespace WPFSudoku
             SolidColorBrush ChoosenColor = new SolidColorBrush();
             ChoosenColor.Color = Colors.Green;
             Text = (System.Windows.Controls.TextBlock)sender;
+            Text.Focusable = true;
+            Text.IsEnabled = true;
             Text.Focus();
-            Text.Background = ChoosenColor;
+            Text.Background = ChoosenColor;            
         }
 
         private void ChangeText(object sender, KeyEventArgs e)
@@ -85,11 +87,13 @@ namespace WPFSudoku
 
             if (!KeyRange.Contains((int)e.Key))
             {
-                Text.Text = "0";
+                Text.FontSize = 20;
+                Text.Text = "Not Valid";
             }
 
             else
             {
+                Text.FontSize = canvas.Width / 20;
                 string value = e.Key.ToString();
                 int index = (int)value[1] - 48;
                 Text.Text = index.ToString();
@@ -99,7 +103,6 @@ namespace WPFSudoku
                 ChoosenColor.Color = Color.FromRgb(r, g, b);
                 Text.Background = ChoosenColor;
             }
-            
         }
 
         private void CreateRecTextBlockList(int i, int j)
@@ -119,8 +122,6 @@ namespace WPFSudoku
                 TextAlignment = System.Windows.TextAlignment.Center,
                 Text = $"{0}",
                 FontSize = canvas.Width / 20,
-                Focusable = true,
-                IsEnabled = true,
             };
             TextBlockList[i][j].MouseDown += SelectCell;
             TextBlockList[i][j].KeyDown += ChangeText;
