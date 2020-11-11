@@ -174,14 +174,14 @@ namespace WPFSudoku
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
+            _ = Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
             sw.Stop();
             Console.WriteLine($"Time taken: {sw.ElapsedMilliseconds}ms");
             Text = null;
 
         }
 
-        private async void Solver(List<List<int>> BoardList, List<PossibleMembers> ValidMembers, List<int> Members, List<List<int>> Starts, List<List<int>> Ends, int Steps)
+        private async Task Solver(List<List<int>> BoardList, List<PossibleMembers> ValidMembers, List<int> Members, List<List<int>> Starts, List<List<int>> Ends, int Steps)
         {
             Steps++;
             ValidMembers.Clear();
@@ -320,7 +320,7 @@ namespace WPFSudoku
                 if (ValidMembers.Count > 0)
                 {
                     Steps++;
-                    Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
+                    _ = Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
                 }
 
                 else if (ValidMembers.Count == 0)
