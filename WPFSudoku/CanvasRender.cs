@@ -310,9 +310,9 @@ namespace WPFSudoku
                             SolidColorBrush ChoosenColor = new SolidColorBrush();
                             ChoosenColor.Color = Color.FromRgb(r, g, b);
                             Refresh(TextBlockList[i][j]);
-                            TextBlockList[i][j].Text = await Task.Run(() => $"{BoardList[i][j]}");
-                            TextBlockList[i][j].Background = await Task.Run(() => ChoosenColor);
-                            //Thread.Sleep(50);
+                            TextBlockList[i][j].Text = $"{BoardList[i][j]}";
+                            TextBlockList[i][j].Background = ChoosenColor;
+                            await Task.Delay(100);
                         }
                     }
                 }

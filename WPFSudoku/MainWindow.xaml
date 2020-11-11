@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WPFSudoku"
         mc:Ignorable="d"
         Title="MainWindow" Height="1280" Width="720"
-        FocusManager.FocusedElement="{Binding ElementName=mainCanvas}">
+        >
         
     <Grid>
         <Canvas x:Name="mCanvas" HorizontalAlignment="Left" Height="540" Margin="1,1,1,1" VerticalAlignment="Top" Width="540" Focusable="True"/>
