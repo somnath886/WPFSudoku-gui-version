@@ -22,15 +22,15 @@ namespace WPFSudoku
         private TextBlock Text;
         private List<Tuple<byte, byte, byte>> Colours = new List<Tuple<byte, byte, byte>>
         {
-            new Tuple<byte, byte, byte>(255, 0, 0),
-            new Tuple<byte, byte, byte>(0, 255, 0),
-            new Tuple<byte, byte, byte>(0, 0, 255),
-            new Tuple<byte, byte, byte>(255, 255, 0),
-            new Tuple<byte, byte, byte>(0, 255, 255),
-            new Tuple<byte, byte, byte>(255, 0, 255),
-            new Tuple<byte, byte, byte>(255, 0, 150),
-            new Tuple<byte, byte, byte>(255, 150, 0),
-            new Tuple<byte, byte, byte>(0, 200, 150)
+            new Tuple<byte, byte, byte>(255,0,0),
+            new Tuple<byte, byte, byte>(255,255,0),
+            new Tuple<byte, byte, byte>(0,234,255),
+            new Tuple<byte, byte, byte>(170,0,255),
+            new Tuple<byte, byte, byte>(255,127,0),
+            new Tuple<byte, byte, byte>(0,149,255),
+            new Tuple<byte, byte, byte>(255,0,170),
+            new Tuple<byte, byte, byte>(106,255,0),
+            new Tuple<byte, byte, byte>(0,0,255),
         };
         private int TempCount;
 
@@ -629,9 +629,9 @@ namespace WPFSudoku
                             SolidColorBrush ChoosenColor = new SolidColorBrush();
                             ChoosenColor.Color = Color.FromRgb(r, g, b);
                             Refresh(TextBlockList[i][j]);
-                            TextBlockList[i][j].Text = $"{BoardList[i][j]}";
-                            TextBlockList[i][j].Background = ChoosenColor;
-                            
+                            TextBlockList[i][j].Text = await Task.Run (() => $"{BoardList[i][j]}");
+                            TextBlockList[i][j].Background = await Task.Run (() => ChoosenColor);
+                            await Task.Delay(100);
                         }
                     }
                 }
