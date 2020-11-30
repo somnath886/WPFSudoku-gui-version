@@ -38,7 +38,6 @@ This project is a simple sudoku solver written in C# that solves all the sudoku 
 Features:
 * Doesn't use backtracking algorithm, instead several algorithms that emulate human-like solving techniques, making it several times faster than backtrack.
 * A GUI Application.
-* Cross-Platform Application.
 
 ### Built With
 
