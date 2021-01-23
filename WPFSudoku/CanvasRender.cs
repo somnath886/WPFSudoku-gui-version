@@ -144,16 +144,16 @@ namespace WPFSudoku
         {
             List<List<int>> BoardList = new List<List<int>>();
 
-            //for (int i = 0; i < 9; i++)
-            //{
-            //    BoardList.Add(new List<int>());
+            for (int i = 0; i < 9; i++)
+            {
+                BoardList.Add(new List<int>());
 
-            //    for (int j = 0; j < 9; j++)
-            //    {
-            //        int add = (int)TextBlockList[i][j].Text[0] - 48;
-            //        BoardList[i].Add(add);
-            //    }
-            //}
+                for (int j = 0; j < 9; j++)
+                {
+                    int add = (int)TextBlockList[i][j].Text[0] - 48;
+                    BoardList[i].Add(add);
+                }
+            }
 
             //BoardList.Add(new List<int> { 4, 0, 0, 1, 0, 0, 0, 3, 8 });
             //BoardList.Add(new List<int> { 0, 0, 0, 3, 9, 0, 0, 0, 0 });
@@ -205,15 +205,25 @@ namespace WPFSudoku
             //BoardList.Add(new List<int> { 0, 0, 8, 0, 0, 9, 0, 5, 0 });
             //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 1, 0, 0 });
 
-            BoardList.Add(new List<int> { 0, 4, 7, 0, 0, 0, 9, 0, 1 });
-            BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 8 });
-            BoardList.Add(new List<int> { 0, 6, 0, 0, 0, 0, 0, 0, 5 });
-            BoardList.Add(new List<int> { 0, 5, 0, 7, 3, 4, 0, 2, 0 });
-            BoardList.Add(new List<int> { 0, 0, 0, 6, 8, 0, 4, 0, 0 });
-            BoardList.Add(new List<int> { 0, 0, 0, 2, 0, 0, 0, 0, 0 });
-            BoardList.Add(new List<int> { 4, 3, 0, 0, 0, 1, 0, 6, 0 });
-            BoardList.Add(new List<int> { 0, 0, 0, 0, 7, 0, 0, 0, 9 });
-            BoardList.Add(new List<int> { 0, 0, 1, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 4, 7, 0, 0, 0, 9, 0, 1 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 8 });
+            //BoardList.Add(new List<int> { 0, 6, 0, 0, 0, 0, 0, 0, 5 });
+            //BoardList.Add(new List<int> { 0, 5, 0, 7, 3, 4, 0, 2, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 6, 8, 0, 4, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 2, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 4, 3, 0, 0, 0, 1, 0, 6, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 7, 0, 0, 0, 9 });
+            //BoardList.Add(new List<int> { 0, 0, 1, 0, 0, 0, 0, 0, 0 });
+
+            //BoardList.Add(new List<int> { 1, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
 
             List<List<int>> Starts = new List<List<int>>();
@@ -322,7 +332,7 @@ namespace WPFSudoku
                 }
             }
 
-            if (TempCount == ValidMembers.Count)
+            if (TempCount == 100)
             {
                 Console.WriteLine("Not Valid");
             }
@@ -844,7 +854,19 @@ namespace WPFSudoku
                         List<int> Range = new List<int>();
                         int a = 0;
                         int b = 0;
-                        var FindFirst = Choosen.First(x => x.members.Count == 2);
+                        PossibleMembers FindFirst = null;
+                        //FindFirst = Choosen.First(x => x.members.Count == 2);
+                        var Filter = Choosen.FindAll(x => x.members.Count >= 1);
+                        FindFirst = Filter[0];
+                        foreach (var Firstmin in Filter)
+                        {
+                            if (Firstmin.members.Count < FindFirst.members.Count)
+                                FindFirst = Firstmin;
+                        }
+                        //if (FindFirst == null)
+                        //{
+                            
+                        //}
                         var FindCol = Colbased.FindAll(x => x.Contains(FindFirst));
                         var FindRow = Rowbased.FindAll(x => x.Contains(FindFirst));
                         var FindGrid = GridBased.FindAll(x => x.Contains(FindFirst));
@@ -894,7 +916,8 @@ namespace WPFSudoku
                             Range.Clear();
                             a = 0;
                             b = 0;
-                            var FindSecond = Choosen.First(x => x != FindFirst && x.members.Count == 2);
+                            //var FindSecond = Choosen.First(x => x != FindFirst && x.members.Count == 2);
+                            PossibleMembers FindSecond = Filter.Find(x => x.members.Count <= FindFirst.members.Count);
                             FindCol = Colbased.FindAll(x => x.Contains(FindSecond));
                             FindRow = Rowbased.FindAll(x => x.Contains(FindSecond));
                             FindGrid = GridBased.FindAll(x => x.Contains(FindSecond));
