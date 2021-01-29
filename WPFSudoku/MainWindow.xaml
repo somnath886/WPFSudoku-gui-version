@@ -7,9 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1280" Width="720"
         >
-        
+
     <Grid>
         <Canvas x:Name="mCanvas" HorizontalAlignment="Left" Height="540" Margin="1,1,1,1" VerticalAlignment="Top" Width="540" Focusable="True"/>
+        <Canvas x:Name="tCanvas" HorizontalAlignment="Left" Height="60" Margin="0,550,0,0" VerticalAlignment="Top" Width="120" Focusable="True"/>
         <Button x:Name="ButtonRender" Content="Render" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Click="Render" Width="164" Height="43" FontSize="20"/>
         <Button x:Name="ButtonSolve" Content="Solve" HorizontalAlignment="Right" Margin="0,0,0,500" VerticalAlignment="Bottom" Click="Solve" Width="164" Height="43" FontSize="20" Focusable="True" IsEnabled="True"/>
     </Grid>

@@ -16,7 +16,8 @@ namespace WPFSudoku
 
         private void Render(object sender, RoutedEventArgs e)
         {
-            canvasrender = new CanvasRender(mCanvas);
+            tCanvas.Children.Clear();
+            canvasrender = new CanvasRender(mCanvas, tCanvas);
         }
 
         private async void Solve(object sender, RoutedEventArgs e)

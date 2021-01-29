@@ -17,14 +17,15 @@ namespace WPFSudoku
     class CanvasRender
     {
         private Canvas canvas;
+        private Canvas tcanvas;
         private List<List<Rectangle>> RecList = new List<List<Rectangle>>();
         private List<List<TextBlock>> TextBlockList = new List<List<TextBlock>>();
         private TextBlock Text;
         private int TempValid;
         private List<List<int>> Backup = new List<List<int>>();
         private int track = 0;
-        List<List<int>> BackupBoardList = new List<List<int>>();
-        List<List<int>> FinalBoardList = new List<List<int>>();
+        private List<List<int>> BackupBoardList = new List<List<int>>();
+        private List<List<int>> FinalBoardList = new List<List<int>>();
         private List<Tuple<byte, byte, byte>> Colours = new List<Tuple<byte, byte, byte>>
         {
             new Tuple<byte, byte, byte>(255,0,0),
@@ -39,9 +40,10 @@ namespace WPFSudoku
         };
         private int TempCount;
 
-        public CanvasRender(Canvas canvas)
+        public CanvasRender(Canvas canvas, Canvas tcanvas)
         {
             this.canvas = canvas;
+            this.tcanvas = tcanvas;
             ForLoopstoInitialize();
         }
 
@@ -82,7 +84,7 @@ namespace WPFSudoku
         {
             SolidColorBrush ChoosenColor = new SolidColorBrush();
             ChoosenColor.Color = Colors.Green;
-            Text = (System.Windows.Controls.TextBlock)sender;
+            Text = (TextBlock)sender;
             Text.Focusable = true;
             Text.IsEnabled = true;
             Text.Focus();
@@ -128,7 +130,7 @@ namespace WPFSudoku
             {
                 Height = 60,
                 Width = 60,
-                TextAlignment = System.Windows.TextAlignment.Center,
+                TextAlignment = TextAlignment.Center,
                 Text = $"{0}",
                 FontSize = canvas.Width / 20,
             };
@@ -136,24 +138,24 @@ namespace WPFSudoku
             TextBlockList[i][j].KeyDown += ChangeText;
             Canvas.SetLeft(RecList[i][j], j * 60);
             Canvas.SetLeft(TextBlockList[i][j], j * 60);
-            Canvas.SetTop(RecList[i][j], i * 60);
-            Canvas.SetTop(TextBlockList[i][j], i * 60);
+            Canvas.SetTop(RecList[i][j], (i * 60));
+            Canvas.SetTop(TextBlockList[i][j], (i * 60));
         }
 
         public async Task SolveSudoku()
         {
             List<List<int>> BoardList = new List<List<int>>();
 
-            for (int i = 0; i < 9; i++)
-            {
-                BoardList.Add(new List<int>());
+            //for (int i = 0; i < 9; i++)
+            //{
+            //    BoardList.Add(new List<int>());
 
-                for (int j = 0; j < 9; j++)
-                {
-                    int add = (int)TextBlockList[i][j].Text[0] - 48;
-                    BoardList[i].Add(add);
-                }
-            }
+            //    for (int j = 0; j < 9; j++)
+            //    {
+            //        int add = (int)TextBlockList[i][j].Text[0] - 48;
+            //        BoardList[i].Add(add);
+            //    }
+            //}
 
             //BoardList.Add(new List<int> { 4, 0, 0, 1, 0, 0, 0, 3, 8 });
             //BoardList.Add(new List<int> { 0, 0, 0, 3, 9, 0, 0, 0, 0 });
@@ -225,7 +227,6 @@ namespace WPFSudoku
             //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
-
             List<List<int>> Starts = new List<List<int>>();
             List<List<int>> Ends = new List<List<int>>();
             List<PossibleMembers> ValidMembers = new List<PossibleMembers>();
@@ -283,6 +284,15 @@ namespace WPFSudoku
             Stopwatch sw = new Stopwatch();
             sw.Start();
             await Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
+            sw.Stop();
+            TextBlock New = new TextBlock
+            {
+                FontSize = 50,
+                Text = $"Time taken: {sw.ElapsedMilliseconds}ms"
+            };
+            tcanvas.Children.Add(New);
+            Trace.WriteLine($"Time taken: {sw.ElapsedMilliseconds}ms");
+
             BoardList = FinalBoardList;
             for (int i = 0; i < 9; i++)
             {
@@ -298,30 +308,43 @@ namespace WPFSudoku
                         //Refresh(TextBlockList[i][j]);
                         TextBlockList[i][j].Text = $"{BoardList[i][j]}";
                         TextBlockList[i][j].Background = ChoosenColor;
+                        //await Task.Delay(100);
                     }
                 }
             }
-            FinalBoardList.Clear();
-            sw.Stop();
-            Trace.WriteLine($"Time taken: {sw.ElapsedMilliseconds}ms");
-            Text = null;
 
+            FinalBoardList.Clear();
+            Text = null;
         }
 
         private async Task Solver(List<List<int>> BoardList, List<PossibleMembers> ValidMembers, List<int> Members, List<List<int>> Starts, List<List<int>> Ends, int Steps)
         {
-            Steps++;
+            //for (int i = 0; i < 9; i++)
+            //{
+            //    for (int j = 0; j < 9; j++)
+            //    {
+            //        if (BoardList[i][j] > 0 && TextBlockList[i][j].Background == null)
+
+            //        {
+            //            var RGB = Colours[BoardList[i][j] - 1];
+            //            var r = RGB.Item1; var g = RGB.Item2; var b = RGB.Item3;
+            //            SolidColorBrush ChoosenColor = new SolidColorBrush();
+            //            ChoosenColor.Color = Color.FromRgb(r, g, b);
+            //            Refresh(TextBlockList[i][j]);
+            //            TextBlockList[i][j].Text = $"{BoardList[i][j]}";
+            //            TextBlockList[i][j].Background = ChoosenColor;
+            //            await Task.Delay(100);
+            //        }
+            //    }
+            //}
             ValidMembers.Clear();
 
             for (int i = 0; i < BoardList[0].Count; i++)
             {
-                Steps++;
                 for (int j = 0; j < BoardList[0].Count; j++)
                 {
-                    Steps++;
                     if (BoardList[i][j] == 0)
                     {
-                        Steps++;
                         ValidMembers.Add(new PossibleMembers
                         {
                             x = i,
@@ -342,10 +365,8 @@ namespace WPFSudoku
                 TempCount = ValidMembers.Count;
                 foreach (var Item in ValidMembers)
                 {
-                    Steps++;
                     foreach (var Member in Members)
                     {
-                        Steps++;
                         if (!BoardList[Item.x].Contains(Member))
                         {
                             Steps++;
@@ -356,13 +377,10 @@ namespace WPFSudoku
 
                 foreach (var Item in ValidMembers)
                 {
-                    Steps++;
                     foreach (var Member in Members)
                     {
-                        Steps++;
                         for (int i = 0; i < 9; i++)
                         {
-                            Steps++;
                             if (BoardList[i][Item.y] == Member)
                             {
                                 Item.members.Remove(Member);
@@ -373,18 +391,16 @@ namespace WPFSudoku
 
                 for (int i = 0; i < Starts.Count; i++)
                 {
-                    Steps++;
+
                     List<PossibleMembers> TempList = new List<PossibleMembers>();
 
                     for (int j = Starts[i][0]; j < Ends[i][0] + 1; j++)
                     {
-                        Steps++;
+
                         for (int k = Starts[i][1]; k < Ends[i][1] + 1; k++)
                         {
-                            Steps++;
                             if (BoardList[j][k] == 0)
                             {
-                                Steps++;
                                 TempList.Add(ValidMembers.Find(Item => Item.x == j && Item.y == k));
                             }
                         }
@@ -392,19 +408,14 @@ namespace WPFSudoku
 
                     foreach (var Temp in TempList)
                     {
-                        Steps++;
                         for (int j = Starts[i][0]; j < Ends[i][0] + 1; j++)
                         {
-                            Steps++;
                             for (int k = Starts[i][1]; k < Ends[i][1] + 1; k++)
                             {
-                                Steps++;
                                 if (BoardList[j][k] != 0)
                                 {
-                                    Steps++;
                                     if (Temp.members.Contains(BoardList[j][k]))
                                     {
-                                        Steps++;
                                         Temp.members.Remove(BoardList[j][k]);
                                     }
                                 }
