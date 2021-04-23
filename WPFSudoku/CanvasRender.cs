@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -146,16 +144,16 @@ namespace WPFSudoku
         {
             List<List<int>> BoardList = new List<List<int>>();
 
-            //for (int i = 0; i < 9; i++)
-            //{
-            //    BoardList.Add(new List<int>());
+            for (int i = 0; i < 9; i++)
+            {
+                BoardList.Add(new List<int>());
 
-            //    for (int j = 0; j < 9; j++)
-            //    {
-            //        int add = (int)TextBlockList[i][j].Text[0] - 48;
-            //        BoardList[i].Add(add);
-            //    }
-            //}
+                for (int j = 0; j < 9; j++)
+                {
+                    int add = (int)TextBlockList[i][j].Text[0] - 48;
+                    BoardList[i].Add(add);
+                }
+            }
 
             //BoardList.Add(new List<int> { 4, 0, 0, 1, 0, 0, 0, 3, 8 });
             //BoardList.Add(new List<int> { 0, 0, 0, 3, 9, 0, 0, 0, 0 });
@@ -226,6 +224,26 @@ namespace WPFSudoku
             //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+
+            //BoardList.Add(new List<int> { 0, 8, 0, 0, 0, 7, 0, 6, 0 });
+            //BoardList.Add(new List<int> { 4, 0, 5, 3, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 1, 0, 2, 0, 0, 5, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 4, 0, 0, 0, 0, 1, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 6 });
+            //BoardList.Add(new List<int> { 0, 6, 3, 0, 0, 0, 0, 0, 8 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 1, 0, 0, 2, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 6, 0, 0, 5, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 9, 0, 0, 7, 0, 3 });
+
+            //BoardList.Add(new List<int> { 0, 3, 1, 0, 6, 0, 4, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 2, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 3 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 4, 0, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 6, 2, 0, 0, 0, 0, 0, 9 });
+            //BoardList.Add(new List<int> { 0, 0, 4, 9, 0, 0, 0, 0, 1 });
+            //BoardList.Add(new List<int> { 0, 0, 0, 0, 0, 4, 5, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 9, 7, 0, 8, 0, 0, 0, 0 });
+            //BoardList.Add(new List<int> { 0, 8, 0, 0, 1, 0, 7, 6, 0 });
 
             List<List<int>> Starts = new List<List<int>>();
             List<List<int>> Ends = new List<List<int>>();
@@ -799,6 +817,28 @@ namespace WPFSudoku
                         if (CommonTwoOrThree.Count == 2)
                         {
                             var Three = CommonTwoOrThree.Find(x => x.members.Count == 3);
+                            List<int> All = new List<int>();
+                            foreach (var a in FindGrid)
+                            {
+                                All.AddRange(a.members.Intersect(I.members));
+                            }
+                            int one = 0;
+                            int two = 0;
+                            foreach (var a in All)
+                            {
+                                if (a == I.members[0])
+                                {
+                                    one++;
+                                }
+                                if (a == I.members[1])
+                                {
+                                    two++;
+                                }
+                            }
+                            if (one == FindGrid.Count() || two == FindGrid.Count())
+                            {
+                                continue;
+                            }
                             if (Three == null)
                             {
                                 continue;
@@ -846,139 +886,76 @@ namespace WPFSudoku
                 {
                     if (TempValid == ValidMembers.Count)
                     {
-                        track++;
-                        if (track == 1)
-                        {
-                            CreateBackup(BoardList);
-                        }
-                        var NotZero = GridBased.First(x => x.Count >= 1);
-                        int min = NotZero.Count;
-                        var Choosen = NotZero;
-                        foreach (var Grid in GridBased)
-                        {
-                            if (Grid.Count < min && Grid.Count != 0)
-                            {
-                                min = Grid.Count;
-                                Choosen = Grid;
-                            }
-                        }
-                        List<int> Range = new List<int>();
-                        int a = 0;
-                        int b = 0;
+                        List<PossibleMembers> TempTwo = new List<PossibleMembers>();
+                        List<PossibleMembers> Filter = new List<PossibleMembers>();
                         PossibleMembers FindFirst = null;
-                        //FindFirst = Choosen.First(x => x.members.Count == 2);
-                        var Filter = Choosen.FindAll(x => x.members.Count >= 1);
-                        FindFirst = Filter[0];
-                        foreach (var Firstmin in Filter)
-                        {
-                            if (Firstmin.members.Count < FindFirst.members.Count)
-                                FindFirst = Firstmin;
-                        }
-                        //if (FindFirst == null)
-                        //{
-                            
-                        //}
-                        var FindCol = Colbased.FindAll(x => x.Contains(FindFirst));
-                        var FindRow = Rowbased.FindAll(x => x.Contains(FindFirst));
-                        var FindGrid = GridBased.FindAll(x => x.Contains(FindFirst));
 
-                        foreach (var Col in FindCol)
+                        foreach (var v in ValidMembers)
                         {
-                            foreach (var C in Col)
+                            if (v.members.Count == 2)
                             {
-                                Range.AddRange(C.members);
+                                TempTwo.Add(v);
                             }
                         }
-                        foreach (var Row in FindRow)
+                        if (TempTwo.Count > 0)
                         {
-                            foreach (var R in Row)
+                            foreach (var T in TempTwo)
                             {
-                                Range.AddRange(R.members);
+                                var Find = GridBased.Find(x => x.Contains(T));
+                                if (Find.FindAll(x => x.members.Count == 2).Count == 1)
+                                {
+                                    FindFirst = T;
+                                }
+                            }
+                            if (FindFirst != null)
+                            {
+                                BoardList[FindFirst.x][FindFirst.y] = FindFirst.members[0];
+                                ValidMembers.Remove(FindFirst);
+                                Backup.Add(new List<int> { FindFirst.x, FindFirst.y, FindFirst.members[0], FindFirst.members[1] });
+                            }
+                            else
+                            {
+                                var NotZero = GridBased.First(x => x.Count >= 1);
+                                int max = NotZero.Count;
+                                var Choosen = NotZero;
+                                foreach (var Grid in GridBased)
+                                {
+                                    if (Grid.Count > max && Grid.Count != 0 && Grid.FindAll(x => x.members.Count == 2).Count >= 1)
+                                    {
+                                        max = Grid.Count;
+                                        Choosen = Grid;
+                                    }
+                                }
+                                Filter = Choosen.FindAll(x => x.members.Count == 2);
+                                FindFirst = Filter[0];
+                                BoardList[FindFirst.x][FindFirst.y] = FindFirst.members[0];
+                                ValidMembers.Remove(FindFirst);
+                                Backup.Add(new List<int> { FindFirst.x, FindFirst.y, FindFirst.members[0], FindFirst.members[1] });
                             }
                         }
-                        foreach (var Gri in FindGrid)
+                        else
                         {
-                            foreach (var G in Gri)
+                            var NotZero = GridBased.First(x => x.Count >= 1);
+                            int min = NotZero.Count;
+                            var Choosen = NotZero;
+                            foreach (var Grid in GridBased)
                             {
-                                Range.AddRange(G.members);
+                                if (Grid.Count < min && Grid.Count != 0)
+                                {
+                                    min = Grid.Count;
+                                    Choosen = Grid;
+                                }
                             }
-                        }
-                        foreach (var first in Range)
-                        {
-                            if (first == FindFirst.members[0])
-                                a++;
-                            else if (first == FindFirst.members[1])
-                                b++;
-                        }
-                        if (a < b)
-                        {
+                            Filter = Choosen.FindAll(x => x.members.Count >= 1);
+                            FindFirst = Filter[0];
+                            foreach (var Firstmin in Filter)
+                            {
+                                if (Firstmin.members.Count < FindFirst.members.Count)
+                                    FindFirst = Firstmin;
+                            }
                             BoardList[FindFirst.x][FindFirst.y] = FindFirst.members[0];
                             ValidMembers.Remove(FindFirst);
                             Backup.Add(new List<int> { FindFirst.x, FindFirst.y, FindFirst.members[0], FindFirst.members[1] });
-                        }
-                        else if (b < a)
-                        {
-                            BoardList[FindFirst.x][FindFirst.y] = FindFirst.members[1];
-                            ValidMembers.Remove(FindFirst);
-                            Backup.Add(new List<int> { FindFirst.x, FindFirst.y, FindFirst.members[1], FindFirst.members[0] });
-                        }
-                        else if (a == b)
-                        {
-                            Range.Clear();
-                            a = 0;
-                            b = 0;
-                            //var FindSecond = Choosen.First(x => x != FindFirst && x.members.Count == 2);
-                            PossibleMembers FindSecond = Filter.Find(x => x.members.Count <= FindFirst.members.Count);
-                            FindCol = Colbased.FindAll(x => x.Contains(FindSecond));
-                            FindRow = Rowbased.FindAll(x => x.Contains(FindSecond));
-                            FindGrid = GridBased.FindAll(x => x.Contains(FindSecond));
-
-                            foreach (var Col in FindCol)
-                            {
-                                foreach (var C in Col)
-                                {
-                                    Range.AddRange(C.members);
-                                }
-                            }
-                            foreach (var Row in FindRow)
-                            {
-                                foreach (var R in Row)
-                                {
-                                    Range.AddRange(R.members);
-                                }
-                            }
-                            foreach (var Gri in FindGrid)
-                            {
-                                foreach (var G in Gri)
-                                {
-                                    Range.AddRange(G.members);
-                                }
-                            }
-                            foreach (var first in Range)
-                            {
-                                if (first == FindSecond.members[0])
-                                    a++;
-                                else if (first == FindSecond.members[1])
-                                    b++;
-                            }
-                            if (a < b)
-                            {
-                                BoardList[FindSecond.x][FindSecond.y] = FindSecond.members[0];
-                                ValidMembers.Remove(FindSecond);
-                                Backup.Add(new List<int> { FindSecond.x, FindSecond.y, FindSecond.members[0], FindSecond.members[1] });
-                            }
-                            else if (b < a)
-                            {
-                                BoardList[FindSecond.x][FindSecond.y] = FindSecond.members[1];
-                                ValidMembers.Remove(FindSecond);
-                                Backup.Add(new List<int> { FindSecond.x, FindSecond.y, FindSecond.members[1], FindSecond.members[0] });
-                            }
-                            else if (a == b)
-                            {
-                                BoardList[FindSecond.x][FindSecond.y] = FindSecond.members[1];
-                                ValidMembers.Remove(FindSecond);
-                                Backup.Add(new List<int> { FindSecond.x, FindSecond.y, FindSecond.members[1], FindSecond.members[0] });
-                            }
                         }
                     }
 
@@ -993,17 +970,21 @@ namespace WPFSudoku
 
                     if (lol > 0)
                     {
-                        BoardList = BackupBoardList;
+                        if (Backup.Count == 0)
+                        {
+                            TempValid = ValidMembers.Count;
+                            await Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
+                        }
+                        RestoreBackup(BoardList);
                         TempValid = 0;
                         ValidMembers.Clear();
                         var First = Backup[0];
                         BoardList[First[0]][First[1]] = First[3];
+                        Backup.Clear();
+                        CreateBackup(BoardList);
                         await Solver(BoardList, ValidMembers, Members, Starts, Ends, Steps);
                     }
-                    //if (ValidMembers.Count == 0)
-                    //{
-                    //    Console.WriteLine();
-                    //}
+
                     TempValid = ValidMembers.Count;
                     if (TempValid == 0)
                     {
@@ -1033,6 +1014,17 @@ namespace WPFSudoku
                             FinalBoardList[i].Add(add);
                         }
                     }
+                }
+            }
+        }
+
+        private void RestoreBackup(List<List<int>> BoardList)
+        {
+            for (int i = 0; i < BackupBoardList.Count; i++)
+            {
+                for (int j = 0; j < BackupBoardList[i].Count; j++)
+                {
+                    BoardList[i][j] = BackupBoardList[i][j];
                 }
             }
         }
